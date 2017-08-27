@@ -5,7 +5,7 @@ go build -o myexec .
 
 Run
 ```
-./myexec -remote=127.0.0.1:2375 -version=v1.24 -container=test
+./myexec -remote=127.0.0.1:2375 -version=v1.24 -container=test -cmd=/bin/sh
 ```
 
 My exec implement refers to docker 1.12.x.   
