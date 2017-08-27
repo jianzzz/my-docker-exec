@@ -29,6 +29,7 @@ var (
 	REMOTE_IP = ""
 	API_VERSION = ""
 	TOKEN = "" 
+	CMD = "" 
 )
 
 
@@ -83,22 +84,26 @@ func main(){
 	remote := flag.String("remote", "", "remote docker api ip:port")
 	version := flag.String("version", "", "remote docker api version")
 	container := flag.String("container", "", "container id")
+        cmd := flag.String("cmd", "/bin/sh", "cmd")
 	flag.Parse()	
 	
 	REMOTE_IP = *remote
 	API_VERSION = *version
 	if REMOTE_IP==""{
-		fmt.Println("empty remote ip, usage: myexec -remote=xx -version=xx -container=xx")
+		fmt.Println("empty remote ip, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx]]")
 		return
 	}
         if API_VERSION==""{
-                fmt.Println("empty remote api version, usage: myexec -remote=xx -version=xx -container=xx")
+                fmt.Println("empty remote api version, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx]]")
                 return
         }
         if *container==""{
-                fmt.Println("empty container id, usage: myexec -remote=xx -version=xx -container=xx")
+                fmt.Println("empty container id, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx]]")
                 return
         }
+	if *cmd!=""{
+		CMD = *cmd
+	}
 	CmdExec(*container)
 }
 
@@ -132,7 +137,7 @@ func CmdExec(container string) error {
 		AttachStdout: true,
 		AttachStderr: true,
 		Tty:          true,
-		Cmd:          []string{"/bin/sh"},
+		Cmd:          []string{CMD},
 		Detach:       false,
  	   	DetachKeys:	  "ctrl-p,ctrl-q"}
 
@@ -247,7 +252,7 @@ func (cli *DockerCli) execCreate(ctx context.Context, container string, body int
 		if err != nil {
 			return ExecCreated{},err
 		}
-		fmt.Println(s.Id)
+		fmt.Println("exec ID = ",s.Id)
 		return s, nil
 	} 
 	 
