@@ -92,15 +92,15 @@ func main(){
 	REMOTE_IP = *remote
 	API_VERSION = *version
 	if REMOTE_IP==""{
-		fmt.Println("empty remote ip, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx]]")
+		fmt.Println("empty remote ip, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx] -protocal=xx]")
 		return
 	}
         if API_VERSION==""{
-                fmt.Println("empty remote api version, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx]]")
+                fmt.Println("empty remote api version, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx] -protocal=xx]")
                 return
         }
         if *container==""{
-                fmt.Println("empty container id, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx]]")
+                fmt.Println("empty container id, usage: myexec -remote=xx -version=xx -container=xx [-cmd=xx[,xx] -protocal=xx]")
                 return
         }
 	if *cmd!=""{
