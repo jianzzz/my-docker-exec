@@ -8,6 +8,7 @@ go build -o myexec .
 Run
 ```
 ./myexec -remote=127.0.0.1:2375 -version=v1.24 -container=test -cmd=/bin/sh
+./myexec -remote=/var/run/docker.sock -protocal=unix -version=v1.24 -container=test -cmd=/bin/sh
 ```
 
 External dependency

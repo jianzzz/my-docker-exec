@@ -30,6 +30,7 @@ var (
 	API_VERSION = ""
 	TOKEN = "" 
 	CMD = "" 
+	PROTOCAL = ""
 )
 
 
@@ -85,6 +86,7 @@ func main(){
 	version := flag.String("version", "", "remote docker api version")
 	container := flag.String("container", "", "container id")
         cmd := flag.String("cmd", "/bin/sh", "cmd")
+	protocal := flag.String("protocal", "tcp", "protocal")
 	flag.Parse()	
 	
 	REMOTE_IP = *remote
@@ -104,6 +106,9 @@ func main(){
 	if *cmd!=""{
 		CMD = *cmd
 	}
+	if *protocal!=""{
+                PROTOCAL = *protocal
+        }
 	CmdExec(*container)
 }
 
@@ -231,30 +236,28 @@ func (cli *DockerCli) execCreate(ctx context.Context, container string, body int
 		dialErr       error 
 	)
   
-	dial, dialErr = net.Dial("tcp", REMOTE_IP) 
+	dial, dialErr = net.Dial(PROTOCAL, REMOTE_IP) 
 	if dialErr != nil {
 		return ExecCreated{},dialErr
 	}
 
-	if _, ok := dial.(*net.TCPConn); ok {
-		clientconn := httputil.NewClientConn(dial, nil)
-		defer clientconn.Close()
+	clientconn := httputil.NewClientConn(dial, nil)
+	defer clientconn.Close()
 
-		// Server the connection, error 'connection closed' expected
-		response, err := clientconn.Do(req)
-		if err != nil {
-			return ExecCreated{},err
-		}
+	// Server the connection, error 'connection closed' expected
+	response, err := clientconn.Do(req)
+	if err != nil {
+		return ExecCreated{},err
+	}
 
-		out,_ := ioutil.ReadAll(response.Body)
-		var s ExecCreated
-		err = json.Unmarshal([]byte(out), &s)
-		if err != nil {
-			return ExecCreated{},err
-		}
-		fmt.Println("exec ID = ",s.Id)
-		return s, nil
-	} 
+	out,_ := ioutil.ReadAll(response.Body)
+	var s ExecCreated
+	err = json.Unmarshal([]byte(out), &s)
+	if err != nil {
+		return ExecCreated{},err
+	}
+	fmt.Println("exec ID = ",s.Id)
+	return s, nil
 	 
 	return ExecCreated{},nil
 }
@@ -286,7 +289,7 @@ func (cli *DockerCli) containerExecAttach(ctx context.Context, execID string, bo
 		dialErr       error 
 	)
   
-	conn, dialErr := net.Dial("tcp", REMOTE_IP) 
+	conn, dialErr := net.Dial(PROTOCAL, REMOTE_IP) 
 	if dialErr != nil {
 		return HijackedResponse{}, dialErr
 	}
@@ -339,31 +342,27 @@ func (cli *DockerCli) containerExecInspect(ctx context.Context, execID string, h
 		dialErr       error 
 	)
   
-	dial, dialErr = net.Dial("tcp", REMOTE_IP) 
+	dial, dialErr = net.Dial(PROTOCAL, REMOTE_IP) 
 	if dialErr != nil {
 		return ContainerExecInspect{},dialErr
 	}
 
-	if _, ok := dial.(*net.TCPConn); ok {
-		clientconn := httputil.NewClientConn(dial, nil)
-		defer clientconn.Close()
+	clientconn := httputil.NewClientConn(dial, nil)
+	defer clientconn.Close()
 
-		// Server the connection, error 'connection closed' expected
-		response, err := clientconn.Do(req)
-		if err != nil {
-			return ContainerExecInspect{},err
-		}
+	// Server the connection, error 'connection closed' expected
+	response, err := clientconn.Do(req)
+	if err != nil {
+		return ContainerExecInspect{},err
+	}
 
-		out,_ := ioutil.ReadAll(response.Body)
-		var s ContainerExecInspect
-		err = json.Unmarshal([]byte(out), &s)
-		if err != nil {
-			return ContainerExecInspect{},err
-		} 
-		return s, nil
+	out,_ := ioutil.ReadAll(response.Body)
+	var s ContainerExecInspect
+	err = json.Unmarshal([]byte(out), &s)
+	if err != nil {
+		return ContainerExecInspect{},err
 	} 
-	 
-	return ContainerExecInspect{},nil
+	return s, nil
 }
 
 
@@ -385,22 +384,19 @@ func (cli *DockerCli) containerExecResize(ctx context.Context, execID string, op
 		dialErr       error 
 	)
   
-	dial, dialErr = net.Dial("tcp", REMOTE_IP) 
+	dial, dialErr = net.Dial(PROTOCAL, REMOTE_IP) 
 	if dialErr != nil {
 		return dialErr
 	}
 
-	if _, ok := dial.(*net.TCPConn); ok {
-		clientconn := httputil.NewClientConn(dial, nil)
-		defer clientconn.Close()
+	clientconn := httputil.NewClientConn(dial, nil)
+	defer clientconn.Close()
 
-		// Server the connection, error 'connection closed' expected
-		_, err := clientconn.Do(req)
-		if err != nil {
-			return err
-		}
- 
-	} 
+	// Server the connection, error 'connection closed' expected
+	_, err = clientconn.Do(req)
+	if err != nil {
+		return err
+	}
 	 
 	return nil
 }
@@ -424,22 +420,19 @@ func (cli *DockerCli) containerResize(ctx context.Context, containerID string, o
 		dialErr       error 
 	)
   
-	dial, dialErr = net.Dial("tcp", REMOTE_IP) 
+	dial, dialErr = net.Dial(PROTOCAL, REMOTE_IP) 
 	if dialErr != nil {
 		return dialErr
 	}
 
-	if _, ok := dial.(*net.TCPConn); ok {
-		clientconn := httputil.NewClientConn(dial, nil)
-		defer clientconn.Close()
+	clientconn := httputil.NewClientConn(dial, nil)
+	defer clientconn.Close()
 
-		// Server the connection, error 'connection closed' expected
-		_, err := clientconn.Do(req)
-		if err != nil {
-			return err
-		}
- 
-	} 
+	// Server the connection, error 'connection closed' expected
+	_, err = clientconn.Do(req)
+	if err != nil {
+		return err
+	}
 	 
 	return nil
 }
