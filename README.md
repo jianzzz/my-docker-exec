@@ -11,6 +11,9 @@ Run
 ./myexec -remote=/var/run/docker.sock -protocal=unix -version=v1.24 -container=test -cmd=/bin/sh
 ```
 
+Dial connects to the address on the named network.
+Known networks are "tcp", "tcp4" (IPv4-only), "tcp6" (IPv6-only), "udp", "udp4" (IPv4-only), "udp6" (IPv6-only), "ip", "ip4" (IPv4-only), "ip6" (IPv6-only), "unix", "unixgram" and "unixpacket".
+
 External dependency
 ```
 "golang.org/x/net/context"
